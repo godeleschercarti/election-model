@@ -1,0 +1,1 @@
+This is an election forecasting model for the 2026 New Zealand election.
