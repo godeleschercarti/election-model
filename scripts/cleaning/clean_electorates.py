@@ -51,6 +51,11 @@ def process_df(year:int, df:pd.DataFrame) -> pd.DataFrame:
     df.insert(0, "year", year)
     df.columns = pd.Index(["year", "electorate_id", "electorate_name", "party_votes", "candidate_votes", "registered_voters", "total_voters"])
 
+    NUMERIC_COLS = ["party_votes", "candidate_votes", "registered_voters", "total_voters"]
+
+    for col in NUMERIC_COLS:
+        df[col] = pd.to_numeric(df[col].str.replace(",", ""))
+
     return df
 
 CLEAN_FUNCTIONS: dict[int, Callable[[int], pd.DataFrame]] = {

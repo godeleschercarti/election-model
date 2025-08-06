@@ -6,6 +6,7 @@ def test_electorate_sheets():
      for year in ELECTION_YEARS:
         df = pd.read_csv(f"{DATA_PATH}/{year}/electorates.csv", index_col=0)
         assert df.columns.tolist() == ["year", "electorate_id", "electorate_name", "party_votes", "candidate_votes", "registered_voters", "total_voters"]
+        assert len(df) == ELECTORATES_NUM[year]
 
 def test_electorate_cycle_consistency():
     for cycle in CYCLES:
@@ -13,3 +14,14 @@ def test_electorate_cycle_consistency():
         rdf = pd.read_csv(f"{DATA_PATH}/{cycle[1]}/electorates.csv", index_col=0)
         ldf = ldf.merge(rdf, on="electorate_id", how="inner")
         assert (ldf["electorate_name_y"] == rdf["electorate_name"]).all()
+
+def test_party_sheets():
+    for year in ELECTION_YEARS:
+        df = pd.read_csv(f"{DATA_PATH}/{year}/party-votes.csv", index_col=0)
+        num_electorates = ELECTORATES_NUM[year]
+        parties = []
+        for key, val in MAJOR_PARTIES.items():
+            if year in val:
+                parties.append(key)
+        num_parties = len(parties) + 1
+        assert len(df) == num_electorates*num_parties
